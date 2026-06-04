@@ -1,2 +1,3 @@
 # POO_FinalProject_Alejandro_Sebastian
-Parking System
+Smart Parking System
+Integrantes: Alejandro Galindo Marquez, Sebastian Orozco
