@@ -1,58 +1,68 @@
 # POO_FinalProject_Alejandro_Sebastian
-Smart Parking System
-Members: Alejandro Galindo Marquez, Sebastian Orozco
 
-Descripción general del sistema
+## Smart Parking System
 
-Smart Parking System es una aplicación desarrollada en Java utilizando los principios de Programación Orientada a Objetos (POO) para gestionar un estacionamiento inteligente.
+**Members:** Alejandro Galindo Marquez, Sebastian Orozco
 
-El sistema permite:
+### System Overview
 
-Registrar vehículos que ingresan al parqueadero.
-Asignar automáticamente espacios disponibles.
-Registrar la salida de vehículos.
-Liberar espacios ocupados.
-Consultar la disponibilidad actual del estacionamiento.
-Mostrar información de los vehículos estacionados.
-Generar reportes básicos sobre ocupación y uso del parqueadero.
+Smart Parking System is an application developed in Java using Object-Oriented Programming (OOP) principles to manage an intelligent parking lot.
 
-La arquitectura del proyecto está basada en clases que representan las entidades principales del sistema, tales como:
+The system allows users to:
 
-Vehicle
-ParkingSpot
-ParkingLot
-Ticket
-SmartParkingSystem
+* Register vehicles entering the parking lot.
+* Automatically assign available parking spaces.
+* Register vehicle departures.
+* Release occupied parking spaces.
+* Check current parking availability.
+* Display information about parked vehicles.
+* Generate basic reports on parking occupancy and usage.
 
-Siguiendo los principios de encapsulamiento, herencia, polimorfismo y abstracción.
+The project architecture is based on classes that represent the main entities of the system, such as:
 
-Instrucciones para ejecutar
+* Vehicle
+* ParkingSpot
+* ParkingLot
+* Ticket
+* SmartParkingSystem
 
-Requisitos
-Java JDK 17 o superior.
-IDE compatible con Java.
-Pasos de ejecución:
-Descargar o clonar el repositorio.
-Abrir el proyecto en el IDE.
-Compilar el proyecto.
-Ejecutar la clase principal:
-Main.java
+Following the principles of encapsulation, inheritance, polymorphism, and abstraction.
 
-Entradas/Salidas
+### Execution Instructions
 
-Entradas:
-Usuario presiona "Register Entry"
-Owner Name: Jose
-Plate: ABC123
-Vehicle Type: Car, Motorcycle.
-Brand: Toyota
+#### Requirements
 
-Salidas:
+* Java JDK 17 or higher.
+* A Java-compatible IDE.
+
+#### Steps to Run
+
+1. Download or clone the repository.
+2. Open the project in your IDE.
+3. Compile the project.
+4. Run the main class:
+
+`Main.java`
+
+### Inputs / Outputs
+
+#### Inputs
+
+User clicks **"Register Entry"**
+
+* Owner Name: Jose
+* Plate: ABC123
+* Vehicle Type: Car, Motorcycle
+* Brand: Toyota
+
+#### Outputs
 
 Entry registered successfully
+
 Ticket ID: 3
+
 Spot: 1
 
-Diagrama de Clases
+### Class Diagram
 
-/ModelDiagram.gif
+`/ModelDiagram.gif`
