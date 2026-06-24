@@ -1,9 +1,11 @@
 package domain;
 
+// Class that represents a car vehicle
 public class Car extends Vehicle{
-    public Car(String brand,String plate, String ownerName) {
-        super(brand,plate,ownerName);
+    public Car(String ownerName, String plate, String brand) {
+        super(ownerName, plate ,brand);
     }
+
     @Override
     public String getVehicleType() {
     return "Car";

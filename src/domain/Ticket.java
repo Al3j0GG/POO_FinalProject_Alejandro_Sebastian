@@ -1,9 +1,11 @@
 package domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public class Ticket {
+// Class that represents a parking ticket with entry/exit times and fee calculation
+public class Ticket implements Serializable {
     // PRIVATE
     private int ticketId;
     private LocalDateTime entryTime;
@@ -69,7 +71,7 @@ public class Ticket {
     }
     
         
-    // TotalAmountCalculate
+    // Calculate total amount based on hours and vehicle type
     public double calculateTotalAmount() {
         if (exitTime != null) {
             long minutes = ChronoUnit.MINUTES.between(entryTime, exitTime);
@@ -78,15 +80,22 @@ public class Ticket {
 
             String type = vehicle.getVehicleType();
             if (type.equals("Car")) {
-                this.totalAmount = (hours * 3600); 
+                this.totalAmount = (hours * 4000); 
             } else {
-                this.totalAmount = (hours * 1800);
+                this.totalAmount = (hours * 2500);
             }
-            
-            
         }
         return this.totalAmount;
+    }
 
+    // Predict cost based on estimated hours
+    public double predictCost(int estimatedHours) {
+        String type = vehicle.getVehicleType();
+        if (type.equals("Car")) {
+            return estimatedHours * 4000;
+        } else {
+            return estimatedHours * 2500;
+        }
     }
 
 }

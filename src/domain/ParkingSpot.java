@@ -1,6 +1,9 @@
 package domain;
 
-public class ParkingSpot {
+import java.io.Serializable;
+
+// Class that represents a parking spot in the parking lot
+public class ParkingSpot implements Serializable {
     private int spotNumber;
     private boolean occupied;
     private Vehicle vehicle;
@@ -10,19 +13,22 @@ public class ParkingSpot {
         this.occupied = false;
     }
 
-    public boolean isAvaible() {
+    public boolean isAvailable() {
         return !occupied;
     }
-    public void assingVehicle(Vehicle vehicle){
+
+    public void assignVehicle(Vehicle vehicle){
         this.vehicle = vehicle;
         this.occupied = true;
 
 
     }
+
     public void removeVehicle(){
         this.occupied = false;
         this.vehicle= null;
     }
+
     public int getSpotNumber(){
         return spotNumber;
     }
