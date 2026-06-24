@@ -12,12 +12,16 @@ public class ParkingLot implements Serializable {
     private String name;
     private ArrayList<ParkingSpot> spots;
     private ArrayList<Ticket> tickets;
+    private double carRate;
+    private double motorcycleRate;
 
     // Constructor
     public ParkingLot(String name) {
         this.name = name;
         spots = new ArrayList<ParkingSpot>();
         tickets = new ArrayList<Ticket>();
+        this.carRate = 4000.0;
+        this.motorcycleRate = 2500.0;
     }
 
     // Methods
@@ -58,7 +62,7 @@ public class ParkingLot implements Serializable {
             if (ticket.getTicketId() == ticketId) {
                 ticket.setExitTime(LocalDateTime.now());
                 ticket.getParkingSpot().removeVehicle();
-                totalAmount = ticket.calculateTotalAmount();
+                totalAmount = ticket.calculateTotalAmount(getCarRate(), getMotorcycleRate());
             }
         }
         return totalAmount;
@@ -159,9 +163,54 @@ public class ParkingLot implements Serializable {
     // Classification: predict cost for a vehicle type based on hours
     public double predictCost(String vehicleType, int hours) {
         if (vehicleType.equals("Car")) {
-            return hours * 4000;
+            return hours * getCarRate();
         } else {
-            return hours * 2500;
+            return hours * getMotorcycleRate();
+        }
+    }
+
+    // Rate configurations
+    public double getCarRate() {
+        if (this.carRate <= 0) {
+            this.carRate = 4000.0;
+        }
+        return this.carRate;
+    }
+
+    public void setCarRate(double carRate) {
+        this.carRate = carRate;
+    }
+
+    public double getMotorcycleRate() {
+        if (this.motorcycleRate <= 0) {
+            this.motorcycleRate = 2500.0;
+        }
+        return this.motorcycleRate;
+    }
+
+    public void setMotorcycleRate(double motorcycleRate) {
+        this.motorcycleRate = motorcycleRate;
+    }
+
+    // Helper to check if a vehicle is already parked in the lot
+    public boolean isVehicleParked(String plate) {
+        if (plate == null) return false;
+        for (Ticket ticket : tickets) {
+            if (ticket.getExitTime() == null && ticket.getVehicle().getPlate().equalsIgnoreCase(plate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Serialization compatibility
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        if (this.carRate <= 0) {
+            this.carRate = 4000.0;
+        }
+        if (this.motorcycleRate <= 0) {
+            this.motorcycleRate = 2500.0;
         }
     }
 

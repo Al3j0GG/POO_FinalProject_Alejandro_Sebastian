@@ -72,7 +72,7 @@ public class Ticket implements Serializable {
     
         
     // Calculate total amount based on hours and vehicle type
-    public double calculateTotalAmount() {
+    public double calculateTotalAmount(double carRate, double motorcycleRate) {
         if (exitTime != null) {
             long minutes = ChronoUnit.MINUTES.between(entryTime, exitTime);
             if (minutes == 0) minutes = 1;
@@ -80,21 +80,21 @@ public class Ticket implements Serializable {
 
             String type = vehicle.getVehicleType();
             if (type.equals("Car")) {
-                this.totalAmount = (hours * 4000); 
+                this.totalAmount = (hours * carRate); 
             } else {
-                this.totalAmount = (hours * 2500);
+                this.totalAmount = (hours * motorcycleRate);
             }
         }
         return this.totalAmount;
     }
 
     // Predict cost based on estimated hours
-    public double predictCost(int estimatedHours) {
+    public double predictCost(int estimatedHours, double carRate, double motorcycleRate) {
         String type = vehicle.getVehicleType();
         if (type.equals("Car")) {
-            return estimatedHours * totalAmount;
+            return estimatedHours * carRate;
         } else {
-            return estimatedHours * totalAmount;
+            return estimatedHours * motorcycleRate;
         }
     }
 

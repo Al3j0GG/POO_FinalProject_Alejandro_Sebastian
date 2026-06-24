@@ -94,7 +94,7 @@ public class MainFrame extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(7, 1, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(8, 1, 10, 10));
         JButton btnEntry = new JButton("Register Entry");
         JButton btnExit = new JButton("Register Exit");
         JButton btnSearch = new JButton("Search Vehicle");
@@ -102,6 +102,7 @@ public class MainFrame extends JFrame {
         JButton btnReport = new JButton("Generate Report");
         JButton btnClassification = new JButton("Classification");
         JButton btnPrediction = new JButton("Prediction");
+        JButton btnConfigureRates = new JButton("Configure Rates");
 
         btnEntry.addActionListener(e -> cardLayout.show(mainPanel, "entry"));
         btnExit.addActionListener(e -> cardLayout.show(mainPanel, "exit"));
@@ -110,6 +111,7 @@ public class MainFrame extends JFrame {
         btnReport.addActionListener(e -> { showReport(); cardLayout.show(mainPanel, "report"); });
         btnClassification.addActionListener(e -> { showClassification(); cardLayout.show(mainPanel, "classification"); });
         btnPrediction.addActionListener(e -> cardLayout.show(mainPanel, "prediction"));
+        btnConfigureRates.addActionListener(e -> showConfigureRatesDialog());
 
         buttonPanel.add(btnEntry);
         buttonPanel.add(btnExit);
@@ -118,6 +120,7 @@ public class MainFrame extends JFrame {
         buttonPanel.add(btnReport);
         buttonPanel.add(btnClassification);
         buttonPanel.add(btnPrediction);
+        buttonPanel.add(btnConfigureRates);
 
         panel.add(buttonPanel, BorderLayout.CENTER);
 
@@ -343,7 +346,7 @@ public class MainFrame extends JFrame {
             double cost = parkingLot.predictCost(type, hours);
             txtPredictResult.setText("Prediction for " + type + "\n"
                     + "Estimated hours: " + hours + "\n"
-                    + "Cost per hour: $" + (type.equals("Car") ? 4000 : 2500) + "\n"
+                    + "Cost per hour: $" + (type.equals("Car") ? parkingLot.getCarRate() : parkingLot.getMotorcycleRate()) + "\n"
                     + "Total predicted cost: $" + cost);
         } catch (NumberFormatException e) {
             txtPredictResult.setText("Please enter a valid number of hours");
@@ -359,6 +362,12 @@ public class MainFrame extends JFrame {
 
         if (ownerName.isEmpty() || plate.isEmpty() || brand.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill all fields");
+            return;
+        }
+
+        if (parkingLot.isVehicleParked(plate)) {
+            JOptionPane.showMessageDialog(this, "Vehicle with plate " + plate + " is already in the parking lot.", "Registration Error", JOptionPane.ERROR_MESSAGE);
+            txtEntryResult.setText("Error: Vehicle with plate " + plate + " is already registered and parked.");
             return;
         }
 
@@ -416,16 +425,29 @@ public class MainFrame extends JFrame {
 
     // List all vehicles in the parking lot
     private void listVehicles() {
-        ArrayList<Vehicle> vehicles = parkingLot.listVehicles();
-        if (vehicles.isEmpty()) {
+        ArrayList<Ticket> tickets = parkingLot.listTickets();
+        if (tickets.isEmpty()) {
             txtReport.setText("No vehicles registered");
         } else {
-            String list = "";
-            for (Vehicle v : vehicles) {
-                list += "Owner: " + v.getOwnerName() + " | Plate: " + v.getPlate()
-                        + " | Brand: " + v.getBrand() + " | Type: " + v.getVehicleType() + "\n";
+            StringBuilder sb = new StringBuilder();
+            sb.append("=== LIST OF VEHICLES AND TICKETS ===\n\n");
+            for (Ticket t : tickets) {
+                Vehicle v = t.getVehicle();
+                sb.append("Ticket ID: ").append(t.getTicketId())
+                  .append(" | Plate: ").append(v.getPlate())
+                  .append(" | Owner: ").append(v.getOwnerName())
+                  .append(" | Brand: ").append(v.getBrand())
+                  .append(" | Type: ").append(v.getVehicleType())
+                  .append(" | Spot: ").append(t.getParkingSpot().getSpotNumber());
+                
+                if (t.getExitTime() == null) {
+                    sb.append(" | Status: PARKED");
+                } else {
+                    sb.append(" | Status: EXITED | Paid: $").append(t.getTotalAmount());
+                }
+                sb.append("\n");
             }
-            txtReport.setText(list);
+            txtReport.setText(sb.toString());
         }
     }
 
@@ -447,6 +469,59 @@ public class MainFrame extends JFrame {
     // Load data from file
     private void loadData() {
         parkingLot = DataPersistence.load(DATA_FILE);
+    }
+
+    // Opens settings dialog to configure car and motorcycle hourly rates
+    private void showConfigureRatesDialog() {
+        JDialog dialog = new JDialog(this, "Configure Rates", true);
+        dialog.setLayout(new BorderLayout(10, 10));
+        dialog.setSize(350, 200);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        formPanel.add(new JLabel("Car Rate ($/hour):"));
+        JTextField txtCarRate = new JTextField(String.valueOf(parkingLot.getCarRate()));
+        formPanel.add(txtCarRate);
+
+        formPanel.add(new JLabel("Motorcycle Rate ($/hour):"));
+        JTextField txtMotorcycleRate = new JTextField(String.valueOf(parkingLot.getMotorcycleRate()));
+        formPanel.add(txtMotorcycleRate);
+
+        JButton btnSave = new JButton("Save");
+        JButton btnCancel = new JButton("Cancel");
+
+        btnSave.addActionListener(e -> {
+            try {
+                double carRate = Double.parseDouble(txtCarRate.getText().trim());
+                double motorcycleRate = Double.parseDouble(txtMotorcycleRate.getText().trim());
+
+                if (carRate <= 0 || motorcycleRate <= 0) {
+                    JOptionPane.showMessageDialog(dialog, "Rates must be positive numbers.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                parkingLot.setCarRate(carRate);
+                parkingLot.setMotorcycleRate(motorcycleRate);
+                saveData();
+                JOptionPane.showMessageDialog(dialog, "Rates updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                dialog.dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "Please enter valid numeric values for rates.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnCancel.addActionListener(e -> dialog.dispose());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(btnSave);
+        buttonPanel.add(btnCancel);
+
+        dialog.add(formPanel, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
     }
 
     // Main method - entry point of the application
