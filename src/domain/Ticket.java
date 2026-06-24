@@ -92,9 +92,9 @@ public class Ticket implements Serializable {
     public double predictCost(int estimatedHours) {
         String type = vehicle.getVehicleType();
         if (type.equals("Car")) {
-            return estimatedHours * 4000;
+            return estimatedHours * 3600;
         } else {
-            return estimatedHours * 2500;
+            return estimatedHours * 1800;
         }
     }
 
