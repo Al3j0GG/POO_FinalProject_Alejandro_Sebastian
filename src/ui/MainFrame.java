@@ -343,7 +343,7 @@ public class MainFrame extends JFrame {
             double cost = parkingLot.predictCost(type, hours);
             txtPredictResult.setText("Prediction for " + type + "\n"
                     + "Estimated hours: " + hours + "\n"
-                    + "Cost per hour: $" + (type.equals("Car") ? 3600 : 1800) + "\n"
+                    + "Cost per hour: $" + (type.equals("Car") ? 4000 : 2500) + "\n"
                     + "Total predicted cost: $" + cost);
         } catch (NumberFormatException e) {
             txtPredictResult.setText("Please enter a valid number of hours");
