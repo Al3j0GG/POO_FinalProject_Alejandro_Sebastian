@@ -38,3 +38,21 @@ Compilar el proyecto.
 Ejecutar la clase principal:
 Main.java
 
+Entradas/Salidas
+
+Entradas:
+Usuario presiona "Register Entry"
+Owner Name: Jose
+Plate: ABC123
+Vehicle Type: Car, Motorcycle.
+Brand: Toyota
+
+Salidas:
+
+Entry registered successfully
+Ticket ID: 3
+Spot: 1
+
+Diagrama de Clases
+
+/ModelDiagram.gif
